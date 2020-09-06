@@ -14,7 +14,9 @@ public class Bullet {
     public static int WIDTH = ResourceMgr.bulletD.getWidth();
     public static int HEIGHT = ResourceMgr.bulletD.getHeight();
     private boolean living = true;
+    private Group group = Group.BAD;
     TankFrame tf = null;
+
     public int getX() {
         return x;
     }
@@ -40,10 +42,11 @@ public class Bullet {
     }
 
 
-    public Bullet(int x, int y, Dir dir, TankFrame tf) {
+    public Bullet(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.group = group;
         this.tf = tf;
     }
 
@@ -54,6 +57,14 @@ public class Bullet {
      当子弹状态为死亡时，把子弹从
      子弹列表中移除，防止内存泄漏
      */
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 
     public void paint(Graphics g){
         if(!living) {
@@ -103,6 +114,7 @@ public class Bullet {
         }
     }
     public void collideWith(Tank tank) {
+        if(this.group == tank.getGroup()) return;
         Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
         Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
         if(rect1.intersects(rect2)) {

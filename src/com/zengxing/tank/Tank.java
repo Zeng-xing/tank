@@ -1,6 +1,7 @@
 package com.zengxing.tank;
 
 import java.awt.*;
+import java.util.Random;
 
 /**
  * @AuThor：86150
@@ -12,12 +13,13 @@ public class Tank {
     private int y;
     public static int WIDTH = ResourceMgr.tankD.getWidth();
     public static int HEIGHT = ResourceMgr.tankD.getHeight();
-    private static final int SPEED = 5;
+    private static final int SPEED = 1;
     private Dir dir;
-    private boolean moving = false;
+    private boolean moving = true;
     private TankFrame tf = null;
     private boolean living = true;
-
+    private Group group = Group.BAD;
+    private Random random = new Random();
     public boolean isMoving() {
         return moving;
     }
@@ -26,26 +28,31 @@ public class Tank {
         this.moving = moving;
     }
 
-    public Tank(int x, int y, Dir dir, TankFrame tf) {
+    public Tank(int x, int y, Dir dir,Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.tf = tf;
+        this.group = group;
     }
 
-    public Tank(int x, int y, Dir dir) {
-        this.x = x;
-        this.y = y;
-        this.dir = dir;
-    }
 
     public Tank() {
     }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
     /*坦克发射炮弹方法*/
     public void fire() {
         int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
         int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-        tf.bullets.add(new Bullet(bX, bY, this.dir, this.tf));
+        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group,this.tf));
     }
 
     /*在游戏框中画出坦克*/
@@ -96,6 +103,7 @@ public class Tank {
             default:
                 break;
         }
+        if(random.nextInt(10) > 8) this.fire();
     }
     public void die() {
         this.living = false;

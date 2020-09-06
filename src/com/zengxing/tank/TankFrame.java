@@ -13,7 +13,7 @@ import java.util.List;
  * 坦克游戏方框类
  */
 public class TankFrame extends Frame {
-    Tank tank = new Tank(200,200,Dir.DOWN,this);
+    Tank tank = new Tank(200,200,Dir.DOWN,Group.GOOD,this);
     List<Bullet> bullets = new ArrayList<Bullet>();
     List<Tank> tanks = new ArrayList<>();
     static final int GAME_WIDTH = 800,GAME_HEIGHT = 600;
