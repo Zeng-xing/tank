@@ -10,12 +10,13 @@ import java.awt.*;
 public class Tank {
     private int x;
     private int y;
-    private static int width = 50;
-    private static int height = 50;
+    public static int WIDTH = ResourceMgr.tankD.getWidth();
+    public static int HEIGHT = ResourceMgr.tankD.getHeight();
     private static final int SPEED = 5;
     private Dir dir;
     private boolean moving = false;
     private TankFrame tf = null;
+    private boolean living = true;
 
     public boolean isMoving() {
         return moving;
@@ -42,7 +43,9 @@ public class Tank {
     }
     /*坦克发射炮弹方法*/
     public void fire() {
-        tf.bullets.add(new Bullet(this.x+width/2, this.y+height/2, this.dir, this.tf));
+        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+        tf.bullets.add(new Bullet(bX, bY, this.dir, this.tf));
     }
 
     /*在游戏框中画出坦克*/
@@ -51,6 +54,9 @@ public class Tank {
         g.setColor(Color.YELLOW);
         g.fillRect(x,y,width,height);
         g.setColor(c);*/
+        if(!living) {
+            tf.tanks.remove(this);
+        }
         switch(dir) {
             case LEFT:
                 g.drawImage(ResourceMgr.tankL, x, y, null);
@@ -90,6 +96,9 @@ public class Tank {
             default:
                 break;
         }
+    }
+    public void die() {
+        this.living = false;
     }
     public int getX() {
         return x;
