@@ -10,6 +10,8 @@ import java.awt.*;
 public class Tank {
     private int x;
     private int y;
+    private static int width = 50;
+    private static int height = 50;
     private static final int SPEED = 5;
     private Dir dir;
     private boolean moving = false;
@@ -38,17 +40,36 @@ public class Tank {
 
     public Tank() {
     }
+    /*坦克发射炮弹方法*/
     public void fire() {
-        tf.bullets.add(new Bullet(this.x, this.y, this.dir, this.tf));
+        tf.bullets.add(new Bullet(this.x+width/2, this.y+height/2, this.dir, this.tf));
     }
 
+    /*在游戏框中画出坦克*/
     public void paint(Graphics g){
-        Color c = g.getColor();
+       /* Color c = g.getColor();
         g.setColor(Color.YELLOW);
-        g.fillRect(x,y,50,50);
-        g.setColor(c);
+        g.fillRect(x,y,width,height);
+        g.setColor(c);*/
+        switch(dir) {
+            case LEFT:
+                g.drawImage(ResourceMgr.tankL, x, y, null);
+                break;
+            case UP:
+                g.drawImage(ResourceMgr.tankU, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.tankR, x, y, null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.tankD, x, y, null);
+                break;
+        }
+
         move();
     }
+
+    /*坦克移动方法*/
     public void move(){
         if(!moving){
             return;

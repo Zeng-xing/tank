@@ -49,6 +49,12 @@ public class Bullet {
 
     public Bullet() {
     }
+
+     /*
+     当子弹状态为死亡时，把子弹从
+     子弹列表中移除，防止内存泄漏
+     */
+
     public void paint(Graphics g){
         if(!live) {
             tf.bullets.remove(this);
@@ -59,6 +65,9 @@ public class Bullet {
         g.setColor(c);
         move();
     }
+
+    /*当子弹飞出屏幕后，把子弹状态设置为死亡*/
+
     public void move(){
         switch(dir){
             case LEFT:

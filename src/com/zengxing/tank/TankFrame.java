@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class TankFrame extends Frame {
     Tank tank = new Tank(200,200,Dir.DOWN,this);
+    Tank tank1 = new Tank(200,200,Dir.DOWN,this);
     List<Bullet> bullets = new ArrayList<Bullet>();
     static final int GAME_WIDTH = 800,GAME_HEIGHT = 600;
     public TankFrame(){
@@ -30,8 +31,10 @@ public class TankFrame extends Frame {
 
         });
     }
-    /*解决闪烁问题，采用双缓冲，先在内存中定义一张图片，
-    把坦克、背景先画在图片中，在一次性画在屏幕上*/
+    /*
+    解决闪烁问题，采用双缓冲，先在内存中定义一张图片，
+    把坦克、背景先画在图片中，在一次性画在屏幕上
+    */
     Image offScreenImage = null;
     @Override
     public void update(Graphics g) {
@@ -54,6 +57,7 @@ public class TankFrame extends Frame {
         g.setColor(c);
 
         tank.paint(g);
+        tank1.paint(g);
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
         }
@@ -63,6 +67,7 @@ public class TankFrame extends Frame {
         boolean bU = false;
         boolean bR = false;
         boolean bD = false;
+        /*键盘按键按下时触发的方法*/
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
@@ -101,7 +106,7 @@ public class TankFrame extends Frame {
             //repaint方法会自动调用paint方法
 //            repaint();
         }
-
+        /*键盘按键抬起是触发的方法*/
         @Override
         public void keyReleased(KeyEvent e) {
             int key = e.getKeyCode();
@@ -123,6 +128,8 @@ public class TankFrame extends Frame {
             }
             setMainTankDir();
         }
+
+        /*设置坦克方向*/
         public void setMainTankDir(){
             if(!bL && !bD && !bR && !bU){
                 tank.setMoving(false);
