@@ -3,7 +3,7 @@ package com.zengxing.tank;
 import java.awt.*;
 
 /**
- * @AuThor：86150
+ * @AuThor：zengxing
  * @DATE:2020/9/5 8:41
  * 子弹类
  */
@@ -114,12 +114,16 @@ public class Bullet {
         }
     }
     public void collideWith(Tank tank) {
-        if(this.group == tank.getGroup()) return;
+        if(this.group == tank.getGroup()) {
+            return;
+        }
         Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
         Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
         if(rect1.intersects(rect2)) {
             tank.die();
             this.die();
+            Explode e = new Explode(tank.getX(), tank.getY(), tf);
+            tf.explodes.add(e);
         }
 
     }

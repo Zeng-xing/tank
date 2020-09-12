@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.Random;
 
 /**
- * @AuThor：86150
+ * @AuThor：zengxing
  * @DATE:2020/9/4 21:20
  * 坦克类
  */
@@ -50,8 +50,26 @@ public class Tank {
 
     /*坦克发射炮弹方法*/
     public void fire() {
-        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+        int bX=0;
+        int bY=0;
+        switch (dir){
+            case LEFT:
+                bX = this.x - Bullet.WIDTH/2;
+                bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+                break;
+            case UP:
+                bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+                bY = this.y - Bullet.HEIGHT/2;
+                break;
+            case RIGHT:
+                bX = this.x +Tank.WIDTH- Bullet.WIDTH;
+                bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+                break;
+            case DOWN:
+                bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+                bY = this.y + Tank.HEIGHT - Bullet.HEIGHT ;
+                break;
+        }
         tf.bullets.add(new Bullet(bX, bY, this.dir, this.group,this.tf));
     }
 
@@ -103,7 +121,9 @@ public class Tank {
             default:
                 break;
         }
-        if(random.nextInt(10) > 8) this.fire();
+        if(random.nextInt(10) > 8 && this.group==Group.BAD) {
+            this.fire();
+        }
     }
     public void die() {
         this.living = false;

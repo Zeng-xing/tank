@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @AuThor：86150
+ * @AuThor：zengxing
  * @DATE:2020/9/3 16:49
  * 坦克游戏方框类
  */
@@ -16,6 +16,7 @@ public class TankFrame extends Frame {
     Tank tank = new Tank(200,200,Dir.DOWN,Group.GOOD,this);
     List<Bullet> bullets = new ArrayList<Bullet>();
     List<Tank> tanks = new ArrayList<>();
+    List<Explode> explodes = new ArrayList<>();
     static final int GAME_WIDTH = 800,GAME_HEIGHT = 600;
     public TankFrame(){
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -41,6 +42,7 @@ public class TankFrame extends Frame {
         if(offScreenImage == null) {
             offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
         }
+
         Graphics gOffScreen = offScreenImage.getGraphics();
         Color c = gOffScreen.getColor();
         gOffScreen.setColor(Color.BLACK);
@@ -68,6 +70,10 @@ public class TankFrame extends Frame {
             for(int j = 0; j<tanks.size(); j++) {
                 bullets.get(i).collideWith(tanks.get(j));
             }
+        }
+        for (int i = explodes.size()-1; i>=0;i--) {
+            explodes.get(i).paint(g);
+            //explodes.remove(i);
         }
     }
     class MyKeyListener extends KeyAdapter{

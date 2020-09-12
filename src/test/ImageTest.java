@@ -1,16 +1,13 @@
 package test;
-
 import org.junit.Test;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @AuThor：86150
+ * @AuThor：zengxing
  * @DATE:2020/9/6 11:26
  */
 public class ImageTest {
