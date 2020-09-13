@@ -13,13 +13,14 @@ public class Tank {
     private int y;
     public static int WIDTH = ResourceMgr.tankD.getWidth();
     public static int HEIGHT = ResourceMgr.tankD.getHeight();
-    private static final int SPEED = 1;
+    private static final int SPEED = 2;
     private Dir dir;
     private boolean moving = true;
     private TankFrame tf = null;
     private boolean living = true;
     private Group group = Group.BAD;
     private Random random = new Random();
+    int count = 0;
     public boolean isMoving() {
         return moving;
     }
@@ -71,6 +72,8 @@ public class Tank {
                 break;
         }
         tf.bullets.add(new Bullet(bX, bY, this.dir, this.group,this.tf));
+        if(this.group == Group.GOOD)
+            new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
     }
 
     /*在游戏框中画出坦克*/
@@ -82,6 +85,7 @@ public class Tank {
         if(!living) {
             tf.tanks.remove(this);
         }
+        /*根据坦克方向画出不同方向的坦克图片*/
         switch(dir) {
             case LEFT:
                 g.drawImage(ResourceMgr.tankL, x, y, null);
@@ -96,6 +100,37 @@ public class Tank {
                 g.drawImage(ResourceMgr.tankD, x, y, null);
                 break;
         }
+        /*使坦克随机移动*/
+        if(this.group==Group.BAD){
+            count++;
+            if(count>50){
+                count = 0;
+                int i = random.nextInt(10);
+                if(i>7){
+                    dir = Dir.UP;
+                }else if(i<=7&&i>=6){
+                    dir = Dir.RIGHT;
+                }else if(i<=5&&i>=4){
+                    dir = Dir.LEFT;
+                }else{
+                    dir = Dir.DOWN;
+                }
+            }
+        }
+        /*边界判断，防止坦克走出游戏框*/
+        if (x <= 0 && dir == Dir.LEFT) {
+            return;
+        }
+        if (x >=800-WIDTH && dir == Dir.RIGHT) {
+            return;
+        }
+        if (y <= 0 && dir == Dir.UP) {
+            return;
+        }
+        if (y >= 600-HEIGHT && dir == Dir.DOWN) {
+            return;
+        }
+
 
         move();
     }
@@ -121,6 +156,7 @@ public class Tank {
             default:
                 break;
         }
+
         if(random.nextInt(10) > 8 && this.group==Group.BAD) {
             this.fire();
         }

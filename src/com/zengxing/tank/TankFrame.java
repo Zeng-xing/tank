@@ -17,7 +17,7 @@ public class TankFrame extends Frame {
     List<Bullet> bullets = new ArrayList<Bullet>();
     List<Tank> tanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
-    static final int GAME_WIDTH = 800,GAME_HEIGHT = 600;
+    static final int GAME_WIDTH = 1080,GAME_HEIGHT = 960;
     public TankFrame(){
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setResizable(false);
@@ -73,9 +73,9 @@ public class TankFrame extends Frame {
         }
         for (int i = explodes.size()-1; i>=0;i--) {
             explodes.get(i).paint(g);
-            //explodes.remove(i);
         }
     }
+
     class MyKeyListener extends KeyAdapter{
         boolean bL = false;
         boolean bU = false;
@@ -141,6 +141,7 @@ public class TankFrame extends Frame {
                     break;
             }
             setMainTankDir();
+            new Thread(()->new Audio("audio/tank_move.wav").play()).start();
         }
 
         /*设置坦克方向*/

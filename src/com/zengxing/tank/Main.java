@@ -1,17 +1,5 @@
 package com.zengxing.tank;
-
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 /**
- *
- *
- *
- *
- *
- *
- *
  * @AuThor：zengxing
  * @DATE:2020/9/3 16:22
  *
