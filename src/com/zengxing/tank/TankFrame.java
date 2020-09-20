@@ -13,7 +13,7 @@ import java.util.List;
  * 坦克游戏方框类
  */
 public class TankFrame extends Frame {
-    Tank tank = new Tank(200,200,Dir.DOWN,Group.GOOD,this);
+    Tank tank = new Tank(200,200,Dir.DOWN,false,Group.GOOD,this);
     List<Bullet> bullets = new ArrayList<Bullet>();
     List<Tank> tanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
@@ -105,6 +105,7 @@ public class TankFrame extends Frame {
                     break;
             }
             setMainTankDir();
+
             /*if(bL == true){
                 x -= 10;
             }
@@ -141,7 +142,7 @@ public class TankFrame extends Frame {
                     break;
             }
             setMainTankDir();
-            new Thread(()->new Audio("audio/tank_move.wav").play()).start();
+            /*new Thread(()->new Audio("audio/tank_move.wav").play()).start();*/
         }
 
         /*设置坦克方向*/

@@ -6,6 +6,7 @@ import java.io.IOException;
 /**
  * @AuThor：zengxing
  * @DATE:2020/9/6 17:56
+ * 声音文件处理类
  */
 public class Audio {
 
@@ -72,8 +73,6 @@ public class Audio {
             e.printStackTrace();
         }
     }
-
-
 
     public void close() {
         try {

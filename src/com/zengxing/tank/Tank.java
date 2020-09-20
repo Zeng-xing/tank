@@ -1,6 +1,7 @@
 package com.zengxing.tank;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 /**
@@ -16,11 +17,13 @@ public class Tank {
     private static final int SPEED = 2;
     private Dir dir;
     private boolean moving = true;
-    private TankFrame tf = null;
     private boolean living = true;
     private Group group = Group.BAD;
+    private TankFrame tf = null;
     private Random random = new Random();
     int count = 0;
+    BufferedImage image;
+
     public boolean isMoving() {
         return moving;
     }
@@ -29,7 +32,7 @@ public class Tank {
         this.moving = moving;
     }
 
-    public Tank(int x, int y, Dir dir,Group group, TankFrame tf) {
+    public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -37,6 +40,14 @@ public class Tank {
         this.group = group;
     }
 
+    public Tank(int x, int y, Dir dir, boolean moving, Group group, TankFrame tf) {
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+        this.moving = moving;
+        this.tf = tf;
+        this.group = group;
+    }
 
     public Tank() {
     }
@@ -51,56 +62,60 @@ public class Tank {
 
     /*坦克发射炮弹方法*/
     public void fire() {
-        int bX=0;
-        int bY=0;
-        switch (dir){
+        int bX = 0;
+        int bY = 0;
+        switch (dir) {
             case LEFT:
-                bX = this.x - Bullet.WIDTH/2;
-                bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+                bX = this.x - Bullet.WIDTH / 2;
+                bY = this.y + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
                 break;
             case UP:
-                bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-                bY = this.y - Bullet.HEIGHT/2;
+                bX = this.x + Tank.WIDTH / 2 - Bullet.WIDTH / 2;
+                bY = this.y - Bullet.HEIGHT / 2;
                 break;
             case RIGHT:
-                bX = this.x +Tank.WIDTH- Bullet.WIDTH;
-                bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+                bX = this.x + Tank.WIDTH - Bullet.WIDTH;
+                bY = this.y + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
                 break;
             case DOWN:
-                bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-                bY = this.y + Tank.HEIGHT - Bullet.HEIGHT ;
+                bX = this.x + Tank.WIDTH / 2 - Bullet.WIDTH / 2;
+                bY = this.y + Tank.HEIGHT - Bullet.HEIGHT;
                 break;
         }
-        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group,this.tf));
-        if(this.group == Group.GOOD)
-            new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
+        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group, this.tf));
+        if (this.group == Group.GOOD)
+            new Thread(() -> new Audio("audio/tank_fire.wav").play()).start();
     }
 
     /*在游戏框中画出坦克*/
-    public void paint(Graphics g){
-       /* Color c = g.getColor();
+    public void paint(Graphics g) {
+       /*
+        Color c = g.getColor();
         g.setColor(Color.YELLOW);
         g.fillRect(x,y,width,height);
-        g.setColor(c);*/
-        if(!living) {
+        g.setColor(c);
+        */
+        if (!living) {
             tf.tanks.remove(this);
         }
         /*根据坦克方向画出不同方向的坦克图片*/
-        switch(dir) {
+        switch (dir) {
             case LEFT:
-                g.drawImage(ResourceMgr.tankL, x, y, null);
+                image = group == Group.GOOD ? ResourceMgr.goodTankL : ResourceMgr.tankL;
                 break;
             case UP:
-                g.drawImage(ResourceMgr.tankU, x, y, null);
+                image = group == Group.GOOD ? ResourceMgr.goodTankU : ResourceMgr.tankU;
                 break;
             case RIGHT:
-                g.drawImage(ResourceMgr.tankR, x, y, null);
+                image = group == Group.GOOD ? ResourceMgr.goodTankR : ResourceMgr.tankR;
                 break;
             case DOWN:
-                g.drawImage(ResourceMgr.tankD, x, y, null);
+                image = group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.tankD;
                 break;
         }
+        g.drawImage(image, x, y, null);
         /*使坦克随机移动*/
+        /*
         if(this.group==Group.BAD){
             count++;
             if(count>50){
@@ -117,30 +132,45 @@ public class Tank {
                 }
             }
         }
+        */
+
+        /**
+         * 敌方坦克随机发射子弹和随机移动
+         */
+        if (this.group == Group.BAD && random.nextInt(100) > 95)
+            this.fire();
+
+        if (this.group == Group.BAD && random.nextInt(100) > 97)
+            randomDir();
         /*边界判断，防止坦克走出游戏框*/
+
+        /*
         if (x <= 0 && dir == Dir.LEFT) {
             return;
         }
-        if (x >=800-WIDTH && dir == Dir.RIGHT) {
+        if (x >= TankFrame.GAME_WIDTH - WIDTH && dir == Dir.RIGHT) {
             return;
         }
-        if (y <= 0 && dir == Dir.UP) {
+        if (y <= 20 && dir == Dir.UP) {
             return;
         }
-        if (y >= 600-HEIGHT && dir == Dir.DOWN) {
+        if (y >= TankFrame.GAME_HEIGHT - HEIGHT && dir == Dir.DOWN) {
             return;
         }
-
-
+        */
         move();
     }
 
+    private void randomDir() {
+        this.dir = Dir.values()[random.nextInt(4)];
+    }
+
     /*坦克移动方法*/
-    public void move(){
-        if(!moving){
+    public void move() {
+        if (!moving) {
             return;
         }
-        switch(dir){
+        switch (dir) {
             case LEFT:
                 x -= SPEED;
                 break;
@@ -157,13 +187,27 @@ public class Tank {
                 break;
         }
 
-        if(random.nextInt(10) > 8 && this.group==Group.BAD) {
+        if (this.group == Group.GOOD) {
+            new Thread(() -> new Audio("audio/tank_move.wav").play()).start();
+        }
+        boundsCheck();
+       /*
+       if(random.nextInt(10) > 8 && this.group==Group.BAD) {
             this.fire();
         }
+        */
     }
+    private void boundsCheck() {
+        if(this.x < 2) x = 2;
+        if (this.y < 28) y = 28;
+        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
+        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
+    }
+
     public void die() {
         this.living = false;
     }
+
     public int getX() {
         return x;
     }
