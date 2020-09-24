@@ -1,4 +1,5 @@
 package com.zengxing.tank;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -13,12 +14,13 @@ import java.util.List;
  * 坦克游戏方框类
  */
 public class TankFrame extends Frame {
-    Tank tank = new Tank(200,200,Dir.DOWN,false,Group.GOOD,this);
+    Tank tank = new Tank(200, 400, Dir.DOWN, false, Group.GOOD, this);
     List<Bullet> bullets = new ArrayList<Bullet>();
     List<Tank> tanks = new ArrayList<>();
     List<Explode> explodes = new ArrayList<>();
-    static final int GAME_WIDTH = 1080,GAME_HEIGHT = 960;
-    public TankFrame(){
+    static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
+
+    public TankFrame() {
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setResizable(false);
         setTitle("tank war");
@@ -32,14 +34,16 @@ public class TankFrame extends Frame {
 
         });
     }
+
     /*
     解决闪烁问题，采用双缓冲，先在内存中定义一张图片，
     把坦克、背景先画在图片中，在一次性画在屏幕上
     */
     Image offScreenImage = null;
+
     @Override
     public void update(Graphics g) {
-        if(offScreenImage == null) {
+        if (offScreenImage == null) {
             offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
         }
 
@@ -51,6 +55,7 @@ public class TankFrame extends Frame {
         paint(gOffScreen);
         g.drawImage(offScreenImage, 0, 0, null);
     }
+
     @Override
     public void paint(Graphics g) {
         Color c = g.getColor();
@@ -66,26 +71,38 @@ public class TankFrame extends Frame {
         for (int i = 0; i < tanks.size(); i++) {
             tanks.get(i).paint(g);
         }
-        for(int i=0; i<bullets.size(); i++) {
-            for(int j = 0; j<tanks.size(); j++) {
+        for (int i = 0; i < bullets.size(); i++) {
+            for (int j = 0; j < tanks.size(); j++) {
                 bullets.get(i).collideWith(tanks.get(j));
             }
         }
-        for (int i = explodes.size()-1; i>=0;i--) {
+        /*for (int i = 0; i < tanks.size(); i++) {
+            for (int j = 0; j < tanks.size(); j++) {
+                if (i != j) {
+                    tanks.get(i).collideWith(tanks.get(j));
+                }
+            }
+        }
+        for (int i = 0; i < tanks.size(); i++) {
+            tank.collideWith(tanks.get(i));
+            tanks.get(i).collideWith(tank);
+        }*/
+        for (int i = explodes.size() - 1; i >= 0; i--) {
             explodes.get(i).paint(g);
         }
     }
 
-    class MyKeyListener extends KeyAdapter{
+    class MyKeyListener extends KeyAdapter {
         boolean bL = false;
         boolean bU = false;
         boolean bR = false;
         boolean bD = false;
+
         /*键盘按键按下时触发的方法*/
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
-            switch(key){
+            switch (key) {
                 case KeyEvent.VK_LEFT:
                     bL = true;
                     break;
@@ -121,11 +138,12 @@ public class TankFrame extends Frame {
             //repaint方法会自动调用paint方法
 //            repaint();
         }
+
         /*键盘按键抬起是触发的方法*/
         @Override
         public void keyReleased(KeyEvent e) {
             int key = e.getKeyCode();
-            switch(key){
+            switch (key) {
                 case KeyEvent.VK_LEFT:
                     bL = false;
                     break;
@@ -146,21 +164,21 @@ public class TankFrame extends Frame {
         }
 
         /*设置坦克方向*/
-        public void setMainTankDir(){
-            if(!bL && !bD && !bR && !bU){
+        public void setMainTankDir() {
+            if (!bL && !bD && !bR && !bU) {
                 tank.setMoving(false);
-            }else {
+            } else {
                 tank.setMoving(true);
-                if(bL) {
+                if (bL) {
                     tank.setDir(Dir.LEFT);
                 }
-                if(bU) {
+                if (bU) {
                     tank.setDir(Dir.UP);
                 }
-                if(bR) {
+                if (bR) {
                     tank.setDir(Dir.RIGHT);
                 }
-                if(bD) {
+                if (bD) {
                     tank.setDir(Dir.DOWN);
                 }
             }

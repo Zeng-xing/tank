@@ -23,6 +23,7 @@ public class Tank {
     private Random random = new Random();
     int count = 0;
     BufferedImage image;
+    Rectangle rect = new Rectangle();
 
     public boolean isMoving() {
         return moving;
@@ -38,6 +39,10 @@ public class Tank {
         this.dir = dir;
         this.tf = tf;
         this.group = group;
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
     }
 
     public Tank(int x, int y, Dir dir, boolean moving, Group group, TankFrame tf) {
@@ -47,6 +52,10 @@ public class Tank {
         this.moving = moving;
         this.tf = tf;
         this.group = group;
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
     }
 
     public Tank() {
@@ -186,22 +195,75 @@ public class Tank {
             default:
                 break;
         }
-
-        if (this.group == Group.GOOD) {
-            new Thread(() -> new Audio("audio/tank_move.wav").play()).start();
+        //update rect
+        rect.x = this.x;
+        rect.y = this.y;
+        if (collideWith()) {
+            stepBack();
+        } else {
+            if (this.group == Group.GOOD) {
+                new Thread(() -> new Audio("audio/tank_move.wav").play()).start();
+            }
+            boundsCheck();
         }
-        boundsCheck();
+
+
        /*
        if(random.nextInt(10) > 8 && this.group==Group.BAD) {
             this.fire();
         }
         */
     }
+
+    /**
+     * 坦克后退一步
+     */
+    public void stepBack() {
+        if (!moving) {
+            return;
+        }
+        switch (dir) {
+            case LEFT:
+                x += SPEED;
+                break;
+            case UP:
+                y += SPEED;
+                break;
+            case RIGHT:
+                x -= SPEED;
+                break;
+            case DOWN:
+                y -= SPEED;
+                break;
+            default:
+                break;
+        }
+        rect.x = this.x;
+        rect.y = this.y;
+    }
+
+    /**
+     * 检查坦克碰撞重叠
+     *
+     * @param
+     */
+    public boolean collideWith() {
+        for (Tank tank : tf.tanks) {
+            if (rect.intersects(tank.rect) && !this.equals(tank)) {
+                return true;
+            }
+        }
+        if(rect.intersects(tf.tank.rect) && !this.equals(tf.tank)){
+            return true;
+        }
+        return false;
+    }
+
     private void boundsCheck() {
-        if(this.x < 2) x = 2;
+        if (this.x < 2) x = 2;
         if (this.y < 28) y = 28;
-        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
-        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
+        if (this.x > TankFrame.GAME_WIDTH - Tank.WIDTH - 2) x = TankFrame.GAME_WIDTH - Tank.WIDTH - 2;
+        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT - 2) y = TankFrame.GAME_HEIGHT - Tank.HEIGHT - 2;
     }
 
     public void die() {

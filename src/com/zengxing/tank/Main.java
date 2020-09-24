@@ -3,11 +3,6 @@ package com.zengxing.tank;
  * @AuThor：zengxing
  * @DATE:2020/9/3 16:22
  *
- *
- *
- *
- *
- *
  */
 public class Main {
         public static void main(String[] args) throws InterruptedException {
